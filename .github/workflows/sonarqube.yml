@@ -38,7 +38,7 @@ jobs:
       sonar_organization: ${{ vars.SONAR_ORGANIZATION }}
       sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
       coverage_artifact_name: coverage
-      coverage_file_path: coverage.out
+      coverage_file_path: ../coverage.out
       language_scanner_property: sonar.go.coverage.reportPaths
       app_id: ${{ vars.APP_ID }}
     secrets:
