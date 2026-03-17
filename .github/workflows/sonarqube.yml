@@ -1,0 +1,47 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    name: Run Tests and Generate Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Run tests with coverage
+        run: |
+          go test -v -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.out
+
+  sonarqube:
+    name: SonarCloud Analysis
+    needs: test
+    uses: huiwangredhat/org-infra/.github/workflows/reusable_sonarqube.yml@update_reuable_ci_sonarqube
+    with:
+      sonar_organization: ${{ vars.SONAR_ORGANIZATION }}
+      sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
+      coverage_artifact_name: coverage
+      coverage_file_path: coverage.out
+      language_scanner_property: sonar.go.coverage.reportPaths
+      app_id: ${{ vars.APP_ID }}
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      GH_APP_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      
