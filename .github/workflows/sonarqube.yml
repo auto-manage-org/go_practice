@@ -33,15 +33,13 @@ jobs:
   sonarqube:
     name: SonarCloud Analysis
     needs: test
-    uses: huiwangredhat/org-infra/.github/workflows/reusable_sonarqube.yml@update_reuable_ci_sonarqube
+    uses: huiwangredhat/org-infra/.github/workflows/reusable_sonarqube.yml@sonarqube_update
     with:
       sonar_organization: ${{ vars.SONAR_ORGANIZATION }}
       sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
       coverage_artifact_name: coverage
       coverage_file_path: ../coverage.out
       language_scanner_property: sonar.go.coverage.reportPaths
-      app_id: ${{ vars.APP_ID }}
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      GH_APP_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-      
+      source_token: ${{ secrets.GITHUB_TOKEN }}
