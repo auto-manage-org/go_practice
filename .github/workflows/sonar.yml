@@ -25,7 +25,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: coverage-artifact
+          name: coverage
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
@@ -34,7 +34,7 @@ jobs:
         with:
           sonar_organization: ${{ vars.SONAR_ORGANIZATION }}
           sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
-          coverage_artifact_name: coverage-artifact
+          coverage_artifact_name: coverage
           coverage_file_path: coverage.out
           language_scanner_property: sonar.go.coverage.reportPaths
         secrets:
