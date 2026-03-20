@@ -1,0 +1,31 @@
+name: Test and Coverage
+
+on:
+  pull_request:
+    paths:
+      - '**.go'
+
+jobs:
+  generate-coverage:
+    name: Generate Coverage Report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22' # Or your preferred version
+
+      - name: Run test
+        # This will now fail clearly if that syntax error persists
+        run: go test -v -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Upload artifact
+        if: success() # Only upload if tests passed
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-artifact
+          path: coverage.out
+          retention-days: 1
