@@ -1,0 +1,42 @@
+name: SonarQube Analysis new
+
+on:
+  workflow_run:
+    workflows: ["Test and Coverage"] # Must match the 'name' in Workflow 1
+    types:
+      - completed
+
+jobs:
+  sonarqube:
+    name: SonarCloud Analysis new
+    runs-on: ubuntu-latest
+    # Only run if the previous workflow actually succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          # We need to check out the code from the PR that triggered the run
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0 # Sonar needs full history for blame info
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: SonarCloud Scan
+        uses: complytime/org-infra/.github/workflows/reusable_sonarqube.yml@main
+        with:
+          sonar_organization: ${{ vars.SONAR_ORGANIZATION }}
+          sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
+          coverage_artifact_name: coverage-artifact
+          coverage_file_path: coverage.out
+          language_scanner_property: sonar.go.coverage.reportPaths
+        secrets:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          source_token: ${{ secrets.GITHUB_TOKEN }}
