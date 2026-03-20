@@ -11,9 +11,13 @@ jobs:
   test:
     name: Run Tests and Generate Coverage
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -46,6 +50,3 @@ jobs:
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       source_token: ${{ secrets.GITHUB_TOKEN }}
-
-      
-      
