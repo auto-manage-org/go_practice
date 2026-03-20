@@ -1,0 +1,27 @@
+name: SonarQube Analysis
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types:
+      - completed
+
+jobs:
+  sonarqube:
+    name: SonarCloud Analysis
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    uses: ./.github/workflows/reusable_sonarqube.yml
+    with:
+      sonar_organization: ${{ vars.SONAR_ORGANIZATION }}
+      sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
+      coverage_artifact_name: coverage
+      coverage_file_path: coverage.out
+      language_scanner_property: sonar.go.coverage.reportPaths
+      workflow_run_id: ${{ github.event.workflow_run.id }}
+      pr_number: ${{ github.event.workflow_run.pull_requests[0].number }}
+      pr_head_sha: ${{ github.event.workflow_run.head_sha }}
+      pr_head_ref: ${{ github.event.workflow_run.pull_requests[0].head.ref }}
+      pr_head_repo: ${{ github.event.workflow_run.head_repository.full_name }}
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      source_token: ${{ secrets.GITHUB_TOKEN }}
