@@ -31,7 +31,7 @@ jobs:
 
       - name: SonarCloud Scan
         uses: complytime/org-infra/.github/workflows/reusable_sonarqube.yml@main
-          with:
+        with:
             sonar_organization: ${{ vars.SONAR_ORGANIZATION }}
             sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
             coverage_artifact_name: coverage
