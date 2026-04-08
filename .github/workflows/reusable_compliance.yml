@@ -109,7 +109,9 @@ jobs:
         run: |
           ./bin/complyctl scan --policy-id ${{ inputs.policy_id }} --format pretty
           ls .complytime/ampel/results
-          ls .complytime/ampel/
+          ls .complytime/scan/evaluation-log-policies-ampel-branch-protection*
+          cat | ls .complytime/scan/evaluation-log-policies-ampel-branch-protection*
+          tree .complytime/ampel/
       - name: Publish report to GitHub Step Summary
         run: |
           for f in .complytime/ampel/results/*-ampel.intoto.json; do
