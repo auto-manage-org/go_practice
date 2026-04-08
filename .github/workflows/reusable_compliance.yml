@@ -110,7 +110,6 @@ jobs:
           ./bin/complyctl scan --policy-id ${{ inputs.policy_id }} --format pretty
           ls .complytime/ampel/results
           ls .complytime/scan/evaluation-log-policies-ampel-branch-protection*
-          cat | ls .complytime/scan/evaluation-log-policies-ampel-branch-protection*
           tree .complytime/ampel/
       - name: Publish report to GitHub Step Summary
         run: |
@@ -163,4 +162,11 @@ jobs:
         with:
           name: snappy.intoto.json
           path: .complytime/ampel/results/*-snappy.intoto.json
+          if-no-files-found: warn
+      
+      - name: Upload Evaluation log
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: evaluation_log.yml
+          path: .complytime/scan/evaluation-log-policies-ampel-branch-protection-*.yaml
           if-no-files-found: warn
